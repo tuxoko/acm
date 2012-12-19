@@ -1,7 +1,18 @@
+/* [100] The 3n + 1 problem
+ *
+ * This problem is solvable using straight forward method.
+ * However, in order to speed up the program, I use some tricks:
+ * The first one is using a table to store calculated LENGTH to prevent
+ * recalculations.
+ * The second one is dividing all possible input into regions,
+ * and precaculate the max LENGTHs of the regions. So when input i, j
+ * are across multiple regions, the program can lookup quickly.
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 
-#define TABLE_LEN 3000000
+#define TABLE_LEN 6000000
 unsigned int table[TABLE_LEN] = {};
 
 #define INPUT_MAX 1000000
@@ -10,17 +21,29 @@ unsigned int table[TABLE_LEN] = {};
 #define PRETABLE_LEN (INPUT_MAX/PRECALC_WIDTH + 1)
 unsigned int pretable[PRETABLE_LEN];
 
+unsigned int stack[550];
+
 unsigned int calc(unsigned int k)
 {
-	unsigned int ret;
-	if(k < TABLE_LEN && table[k])
+	unsigned int ret, sn = 0;
+	if (k < TABLE_LEN && table[k])
 		return table[k];
-	if(k&1)
-		ret = calc(3*k + 1) + 1;
-	else
-		ret = calc(k/2) + 1;
-	if(k < TABLE_LEN)
-		table[k] = ret;
+	while (k != 1) {
+		stack[sn++] = k;
+		if (k & 1)
+			k = 3*k + 1;
+		else
+			k /= 2;
+		if (k < TABLE_LEN && table[k])
+			break;
+	}
+	ret = table[k];
+	for (;sn !=0; sn--) {
+		ret++;
+		k = stack[sn - 1];
+		if(k < TABLE_LEN)
+			table[k] = ret;
+	}
 	return ret;
 }
 

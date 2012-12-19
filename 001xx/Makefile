@@ -1,16 +1,26 @@
-TARGETS = 100
-SOURCES = $(addsuffix .c,$(TARGETS))
+CTARGETS = 100
+CXXTARGETS = 103
+CSOURCES = $(addsuffix .c,$(CTARGETS))
+CXXSOURCES = $(addsuffix .cpp,$(CXXTARGETS))
 CFLAGS = -lm -O2 -ansi
+CXXFLAGS = -lm -O2
 DEBUG_CFLAGS = -lm -g
-DEBUG_TARGETS = $(addsuffix d,$(TARGETS))
-CLEAN_TARGETS = $(TARGETS) $(DEBUG_TARGETS) $(addsuffix .exe,$(TARGETS)) \
-				$(addsuffix .exe,$(DEBUG_TARGETS))
+CDEBUG_TARGETS = $(addsuffix d,$(CTARGETS))
+CXXDEBUG_TARGETS = $(addsuffix d,$(CXXTARGETS))
+CLEAN_TARGETS = $(CTARGETS) $(CDEBUG_TARGETS) $(addsuffix .exe,$(CTARGETS)) \
+		$(addsuffix .exe,$(CDEBUG_TARGETS)) $(CXXTARGETS) \
+		$(CXXDEBUG_TARGETS) $(addsuffix .exe,$(CXXTARGETS)) \
+		$(addsuffix .exe,$(CXXDEBUG_TARGETS))
 
-all: $(TARGETS)
+all: $(CTARGETS) $(CXXTARGETS)
 
-$(TARGETS): $(SOURCES)
+$(CTARGETS): $(CSOURCES)
 	$(CC) $(CFLAGS) $@.c -o $@
-	$(CC) $(DEBUG_CFLAGS) $@.c -o $@d
+	$(CC) $(CDEBUG_CFLAGS) $@.c -o $@d
+
+$(CXXTARGETS): $(CXXSOURCES)
+	$(CXX) $(CXXFLAGS) $@.cpp -o $@
+	$(CXX) $(DEBUG_CFLAGS) $@.cpp -o $@d
 
 clean:
 	rm -f $(CLEAN_TARGETS)
