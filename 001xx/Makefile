@@ -1,4 +1,4 @@
-CTARGETS = 100
+CTARGETS = 100 102
 CXXTARGETS = 103
 CSOURCES = $(addsuffix .c,$(CTARGETS))
 CXXSOURCES = $(addsuffix .cpp,$(CXXTARGETS))
